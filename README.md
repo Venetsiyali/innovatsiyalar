@@ -65,6 +65,19 @@ vaqt. Har bir para 3 qatordan iborat: fan → o'qituvchi → dars turi | xona.
 O'qituvchi akkauntlari jadvaldan avtomatik yaratiladi (`ism.familiya@iusi.uz`), lekin parolsiz
 bo'ladi, ya'ni admin parol bermaguncha ular tizimga kira olmaydi.
 
+## Admin panel (1-bosqich)
+
+- **Foydalanuvchilar** — qidirish va rol bo'yicha filtrlash, yaratish, tahrirlash, o'chirish. Yangi foydalanuvchiga
+  vaqtinchalik parol beriladi va u birinchi kirishda parolni almashtirishi shart.
+  Email orqali yuborish 6-bosqichda qo'shiladi, hozircha parol admin ekranida bir marta ko'rsatiladi.
+- **Excel/CSV import** — ustunlar: `F.I.Sh, Email, Rol, Guruh, Telefon`. Natijada yaratilgan parollarni CSV
+  qilib yuklab olish mumkin.
+- **O'qituvchilarni birlashtirish** — jadvalda bitta odam ikki xil yozilgan bo'lsa (masalan, "Qabulova" va "Qobulova"),
+  o'qituvchi sahifasida birlashtiriladi. Fanlar va darslar tanlangan akkauntga o'tadi.
+- **Tuzilma** — fakultet, yo'nalish va semestrlar. Bir vaqtda faqat bitta semestr faol bo'ladi.
+- **Guruhlar** — tahrirlash, talabalarni checkbox bilan ommaviy qo'shish va chiqarish.
+- **Fanlar** — o'qituvchi biriktirish (ma'ruza yoki amaliyot), guruhlarni tanlash, baholash vaznlari (yig'indisi 100).
+
 ## Loyiha tuzilmasi
 
 ```

@@ -33,6 +33,12 @@ export const authConfig = {
         return pathname === "/login" ? true : NextResponse.redirect(new URL("/login", request.nextUrl));
       }
 
+      // First login (or admin reset): force a password change before anything else.
+      if (auth?.user?.mustChangePassword && pathname !== "/change-password") {
+        return NextResponse.redirect(new URL("/change-password", request.nextUrl));
+      }
+      if (pathname === "/change-password") return !!role;
+
       const required = roleForPath(pathname);
       if (!required) return true;
       if (!role) return false; // → redirect to /login

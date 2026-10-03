@@ -10,7 +10,18 @@ import { t } from "@/lib/i18n";
 export async function requireRole(role: Role) {
   const session = await auth();
   if (!session?.user) redirect("/login");
+  if (session.user.mustChangePassword) redirect("/change-password");
   if (session.user.role !== role) redirect(ROLE_HOME[session.user.role]);
+  return session;
+}
+
+/**
+ * For server actions: actions are public POST endpoints, so every one must
+ * re-check the caller's role. Throws (→ error boundary) instead of redirecting.
+ */
+export async function assertRole(...roles: Role[]) {
+  const session = await auth();
+  if (!session?.user || !roles.includes(session.user.role)) throw new Error(t("errors.forbidden"));
   return session;
 }
 
