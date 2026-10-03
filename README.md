@@ -92,6 +92,24 @@ bo'ladi, ya'ni admin parol bermaguncha ular tizimga kira olmaydi.
   ishlatib bo'lmaydi, shuning uchun brauzerning "PDF sifatida saqlash" imkoniyatidan foydalaniladi.
 - **O'qituvchi va talaba** — shaxsiy jadval. Kompyuterda hafta ko'rinishida, telefonda kunlar ro'yxati bo'lib chiqadi.
 
+## Kurs kontenti (3-bosqich)
+
+Har bir fan sahifasi uch darajali: **Kurs → Modul (mavzu yoki hafta) → Element**. Elementlar: fayl, havola,
+YouTube video va matn sahifa.
+
+- O'qituvchi o'z fanini **Mening fanlarim** bo'limida boshqaradi, admin esa **Fanlar → Kontentni ochish** orqali.
+  Boshqa o'qituvchining fani URL orqali ochilsa, 403 qaytadi.
+- Fayllarni drag-and-drop bilan, bir vaqtda bir nechtasini yuklash mumkin. Ruxsat etilgan turlar: PPT, PDF, Word,
+  Excel, ZIP, rasm (200 MB gacha) va MP4 (500 MB gacha). Boshqa kengaytmalar (.exe va h.k.) rad etiladi.
+- Versiyalash: yangi versiya yuklanganda eskisi o'chmaydi, "Oldingi versiyalar" ro'yxatida qoladi.
+- Modulni yashirish yoki ochilish vaqtini belgilash mumkin: talaba uni vaqti kelgandagina ko'radi.
+- PDF va rasmlar brauzerda ochiladi, ularni yuklab olish ham mumkin.
+
+**Fayl saqlash.** Vercel'da fayllar private **Vercel Blob** store'da saqlanadi (`BLOB_READ_WRITE_TOKEN`).
+Fayllar brauzerdan to'g'ridan-to'g'ri Blob'ga yuklanadi, shuning uchun 4.5 MB'lik cheklov ularga tegishli emas.
+Store private bo'lgani sababli har bir fayl `/api/files/[id]` orqali beriladi va har safar ruxsat tekshiriladi.
+Lokal ishlashda token bo'lmasa, fayllar `uploads/` papkasiga yoziladi.
+
 ## Loyiha tuzilmasi
 
 ```
