@@ -15,7 +15,7 @@ export function AppShell({ session, nav, children }: { session: Session; nav: Na
 
   return (
     <div className="min-h-dvh md:flex">
-      <aside className="border-b border-border bg-card md:sticky md:top-0 md:h-dvh md:w-64 md:shrink-0 md:border-r md:border-b-0">
+      <aside className="print:hidden border-b border-border bg-card md:sticky md:top-0 md:h-dvh md:w-64 md:shrink-0 md:border-r md:border-b-0">
         <div className="flex items-center gap-2 px-4 py-4">
           <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <GraduationCap className="size-5" />
@@ -33,7 +33,7 @@ export function AppShell({ session, nav, children }: { session: Session; nav: Na
         </nav>
       </aside>
       <div className="flex-1">
-        <header className="flex items-center justify-end gap-3 border-b border-border bg-card px-4 py-3">
+        <header className="print:hidden flex items-center justify-end gap-3 border-b border-border bg-card px-4 py-3">
           <span className="truncate text-sm text-muted">{session.user.name}</span>
           <form action={logout}>
             <Button variant="outline" size="sm" type="submit">

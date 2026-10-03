@@ -78,6 +78,20 @@ bo'ladi, ya'ni admin parol bermaguncha ular tizimga kira olmaydi.
 - **Guruhlar** — tahrirlash, talabalarni checkbox bilan ommaviy qo'shish va chiqarish.
 - **Fanlar** — o'qituvchi biriktirish (ma'ruza yoki amaliyot), guruhlarni tanlash, baholash vaznlari (yig'indisi 100).
 
+## Dars jadvali (2-bosqich)
+
+- **Admin → Dars jadvali** — jadvalni guruh, o'qituvchi yoki xona bo'yicha ko'rish (xonalar bandligi ham shu yerda).
+  Haftalar bo'yicha o'tish mumkin.
+- **Dars qo'shish va tahrirlash** — saqlashda konflikt tekshiriladi: guruh, o'qituvchi yoki xona bir vaqtda ikki joyda
+  bo'la olmaydi. Istisnolar: potok ma'ruza (bir xil fan, o'qituvchi va xona bir nechta guruhga) hamda ikkita
+  "migalka" dars.
+- **Bitta darsni ko'chirish yoki bekor qilish** — sababi yoziladi. Guruh talabalari va o'qituvchiga tizim ichida
+  bildirishnoma yaratiladi (email 6-bosqichda qo'shiladi). Har bir o'zgarish `audit_log`'ga yoziladi.
+- **Excel'dan import** — universitetning jadval faylini admin paneldan qayta yuklash mumkin.
+- **Eksport** — Excel (.xlsx) fayl. PDF uchun "Chop etish / PDF" tugmasi bor: Vercel'da Puppeteer
+  ishlatib bo'lmaydi, shuning uchun brauzerning "PDF sifatida saqlash" imkoniyatidan foydalaniladi.
+- **O'qituvchi va talaba** — shaxsiy jadval. Kompyuterda hafta ko'rinishida, telefonda kunlar ro'yxati bo'lib chiqadi.
+
 ## Loyiha tuzilmasi
 
 ```
