@@ -405,5 +405,16 @@
     "inModule": "Vazifa",
     "maxShort": "maks. {max}",
     "uploadFirst": "Fayl yuklanmoqda, kuting…"
+  },
+  "setup": {
+    "title": "Tizimni birinchi marta sozlash",
+    "subtitle": "Administrator akkaunti yaratiladi va dars jadvali (kunduzgi + kechki) bazaga yuklanadi.",
+    "key": "Sozlash kaliti",
+    "keyHint": "Vercel → Settings → Environment Variables bo'limidagi AUTH_SECRET qiymatini kiriting.",
+    "badKey": "Sozlash kaliti noto'g'ri",
+    "alreadyDone": "Tizim allaqachon sozlangan.",
+    "submit": "Sozlashni boshlash",
+    "wait": "Jadvalni yuklash 1–3 daqiqa davom etishi mumkin — sahifani yopmang.",
+    "done": "Tayyor! Admin yaratildi, {groups} guruh va {slots} dars yuklandi. Endi /login sahifasidan kiring."
   }
 }
