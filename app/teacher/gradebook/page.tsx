@@ -1,5 +1,5 @@
-import { ComingSoon } from "@/components/app-shell";
+import { GradebookCourseList } from "@/components/gradebook-table";
 
-export default function Page() {
-  return <ComingSoon titleKey="nav.gradebook" />;
+export default function TeacherGradebookPage() {
+  return <GradebookCourseList basePath="/teacher/gradebook" />;
 }

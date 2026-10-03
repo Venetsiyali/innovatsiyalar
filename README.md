@@ -130,6 +130,20 @@ talabaga eslatma bir marta boradi. Vercel'da `CRON_SECRET` env o'zgaruvchisini q
 cron kuniga faqat bir marta ishlaydi. Pro rejada jadvalni `0 * * * *` (har soat) qilsangiz, eslatmalar
 aniqroq vaqtda boradi.
 
+## Baho jurnali, davomat va hisobotlar (5-bosqich)
+
+- **Baho jurnali** (o'qituvchi uchun "Baho jurnali", admin uchun "Fanlar → Baho jurnali"): qatorlarda talabalar,
+  ustunlarda vazifalar. Ballni to'g'ridan-to'g'ri katakka yozish mumkin, topshirmagan talabaga ham. Har bir
+  nazorat turi (joriy, ON, YN) bo'yicha foiz hisoblanadi, umumiy ball esa fan sozlamalaridagi vaznlar
+  asosida 100 ballik tizimda chiqariladi. Hali vazifasi bo'lmagan nazorat turi hisobga olinmaydi va vaznlar
+  qolganlar orasida qayta taqsimlanadi. Jurnalni guruh bo'yicha filtrlash va Excel'ga eksport qilish mumkin.
+  Talaba faqat o'z qatorini ko'radi ("Baholarim").
+- **Davomat** (o'qituvchi uchun "Davomat"): sana tanlanadi va o'sha kungi darslar chiqadi. Har bir talaba bir
+  bosish bilan keldi, kelmadi yoki sababli deb belgilanadi. Bekor qilingan darslar va kelajakdagi sanalar
+  uchun davomat belgilanmaydi. Talaba semestrda 3 martadan ko'p sababsiz qoldirsa, adminga signal boradi.
+- **Hisobotlar** (admin): fanlar bo'yicha o'rtacha ball va davomat, xavf guruhidagi talabalar, o'qituvchilarning
+  faolligi (TZ'dagi "80% faol o'qituvchi" mezoni shu yerda kuzatiladi).
+
 ## Loyiha tuzilmasi
 
 ```
