@@ -110,6 +110,28 @@ Fayllar brauzerdan to'g'ridan-to'g'ri Blob'ga yuklanadi, shuning uchun 4.5 MB'li
 Store private bo'lgani sababli har bir fayl `/api/files/[id]` orqali beriladi va har safar ruxsat tekshiriladi.
 Lokal ishlashda token bo'lmasa, fayllar `uploads/` papkasiga yoziladi.
 
+## Vazifalar va deadline (4-bosqich)
+
+**O'qituvchi** (Vazifalar → Yangi vazifa) vazifa uchun quyidagilarni belgilaydi: sarlavha, tavsif, biriktirilgan fayl,
+maksimal ball, nazorat turi (joriy, ON yoki YN), boshlanish vaqti, deadline va guruhlar. Kechikib topshirishga ruxsat
+berilsa, necha kun va necha foiz jarima ekanini ham ko'rsatadi. Topshirish turi: fayl, matn yoki ikkalasi.
+Vazifa yaratilganda talabalarga bildirishnoma ketadi.
+- Topshirganlar ro'yxatida kechikib topshirganlar qizil rangda belgilanadi.
+- Tekshirish bitta oynada bo'ladi: chapda talabaning fayli yoki matni, o'ngda ball va izoh, pastda "Saqlash va
+  keyingisi" tugmasi. Kechikkan ish uchun jarima avtomatik hisoblanadi. Har bir baho `audit_log`'ga yoziladi.
+
+**Talaba**
+- Bosh sahifada "Yaqin deadline'lar" bloki bor. Har bir vazifaning holati ko'rsatiladi: topshirilmagan,
+  topshirilgan yoki baholangan.
+- Muddat o'tgach (kechikishga ruxsat bo'lmasa) yuklash bloklanadi. Bu server tomonda ham tekshiriladi.
+  Baholangan javobni qayta topshirib bo'lmaydi.
+
+**Eslatma (cron).** `vercel.json` faylida `/api/cron/deadline-reminders` har kuni soat 08:00 da (Toshkent vaqti)
+ishga tushadi. U muddatiga 24 soatdan kam qolgan va hali topshirmagan talabalarga eslatma yuboradi; bitta
+talabaga eslatma bir marta boradi. Vercel'da `CRON_SECRET` env o'zgaruvchisini qo'shing. Vercel Hobby rejasida
+cron kuniga faqat bir marta ishlaydi. Pro rejada jadvalni `0 * * * *` (har soat) qilsangiz, eslatmalar
+aniqroq vaqtda boradi.
+
 ## Loyiha tuzilmasi
 
 ```
