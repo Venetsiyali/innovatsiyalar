@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ActionForm } from "@/components/action-form";
 import { PageHeader } from "@/components/field";
@@ -30,7 +31,11 @@ export default async function CoursePage({ params }: { params: Promise<{ id: str
 
   return (
     <>
-      <PageHeader title={course.name} />
+      <PageHeader title={course.name}>
+        <Link href={`/admin/courses/${course.id}/content`}>
+          <Button variant="outline">{t("content.openContent")}</Button>
+        </Link>
+      </PageHeader>
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="space-y-4 p-6">
           <ActionForm action={saveCourseAction.bind(null, course.id)}>

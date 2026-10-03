@@ -1,5 +1,5 @@
-import { ComingSoon } from "@/components/app-shell";
+import { CourseList } from "@/components/course-pages";
 
-export default function Page() {
-  return <ComingSoon titleKey="nav.courses" />;
+export default function StudentCoursesPage() {
+  return <CourseList basePath="/student/courses" />;
 }
