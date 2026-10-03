@@ -4,6 +4,7 @@ import { requireRole } from "@/lib/permissions";
 const NAV: NavItem[] = [
   { href: "/admin", labelKey: "nav.dashboard", icon: "dashboard", exact: true },
   { href: "/admin/users", labelKey: "nav.users", icon: "users" },
+  { href: "/admin/structure", labelKey: "nav.structure", icon: "structure" },
   { href: "/admin/groups", labelKey: "nav.groups", icon: "groups" },
   { href: "/admin/courses", labelKey: "nav.courses", icon: "courses" },
   { href: "/admin/schedule", labelKey: "nav.schedule", icon: "schedule" },

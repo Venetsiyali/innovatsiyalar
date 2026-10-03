@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   BarChart3,
   BookOpen,
+  Building2,
   CalendarDays,
   ClipboardList,
   LayoutDashboard,
@@ -18,6 +19,7 @@ import { cn } from "@/lib/utils";
 const ICONS = {
   dashboard: LayoutDashboard,
   users: Users,
+  structure: Building2,
   groups: UsersRound,
   courses: BookOpen,
   schedule: CalendarDays,
