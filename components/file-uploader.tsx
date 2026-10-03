@@ -1,11 +1,11 @@
 "use client";
 
-import { upload } from "@vercel/blob/client";
 import { Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { addFileMaterialAction } from "@/lib/content-actions";
-import { ACCEPT, checkFile, MB, sanitizeFileName } from "@/lib/files";
+import { ACCEPT, checkFile } from "@/lib/files";
+import { uploadFile } from "@/lib/upload-client";
 import { cn } from "@/lib/utils";
 
 type Labels = { drop: string; allowed: string; uploading: string; uploaded: string; failed: string; badType: string; tooBig: string };
@@ -43,26 +43,12 @@ export function FileUploader({
       return;
     }
     try {
-      let url: string;
-      const pathname = `courses/${courseId}/${sanitizeFileName(file.name)}`;
-      if (driver === "blob") {
-        const blob = await upload(pathname, file, {
-          access: "private",
-          handleUploadUrl: "/api/upload",
-          clientPayload: JSON.stringify({ courseId }),
-          multipart: file.size > 20 * MB,
-          onUploadProgress: ({ percentage }) => update(file.name, { progress: Math.round(percentage) }),
-        });
-        url = blob.url;
-      } else {
-        const fd = new FormData();
-        fd.append("file", file);
-        fd.append("courseId", courseId);
-        const res = await fetch("/api/upload/local", { method: "POST", body: fd });
-        const json = (await res.json()) as { url?: string; error?: string };
-        if (!res.ok || !json.url) throw new Error(json.error ?? labels.failed);
-        url = json.url;
-      }
+      const url = await uploadFile(file, {
+        driver,
+        prefix: `courses/${courseId}/`,
+        payload: { courseId, kind: "material" },
+        onProgress: (progress) => update(file.name, { progress }),
+      });
       const saved = await addFileMaterialAction(moduleId, { url, name: file.name, previousId });
       if (saved.error) throw new Error(saved.error);
       update(file.name, { status: "done" });

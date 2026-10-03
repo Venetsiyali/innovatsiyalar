@@ -35,3 +35,23 @@ export function dayOfWeek(d: Date): number {
 export function mondayOf(d: Date): Date {
   return addDays(d, 1 - dayOfWeek(d));
 }
+
+const TASHKENT_OFFSET_MS = 5 * 3_600_000; // UTC+5, no DST
+
+/** datetime-local input value (Tashkent wall time) → Date. */
+export function parseLocalDateTime(value: string): Date | null {
+  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)) return null;
+  const d = new Date(`${value}:00+05:00`);
+  return Number.isNaN(+d) ? null : d;
+}
+
+/** Date → datetime-local input value in Tashkent time. */
+export function toLocalInput(d: Date | null | undefined): string {
+  return d ? new Date(d.getTime() + TASHKENT_OFFSET_MS).toISOString().slice(0, 16) : "";
+}
+
+/** 03.10.2026 14:30 (Tashkent) */
+export function formatDateTime(d: Date): string {
+  const local = new Date(d.getTime() + TASHKENT_OFFSET_MS);
+  return `${formatDate(local)} ${local.toISOString().slice(11, 16)}`;
+}

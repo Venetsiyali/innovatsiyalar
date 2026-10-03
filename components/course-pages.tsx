@@ -83,7 +83,12 @@ export async function CoursePage({ courseId, manage }: { courseId: string; manag
           </p>
         )}
       </div>
-      <CourseContent courseId={course.id} canManage={manage} />
+      <CourseContent
+        courseId={course.id}
+        canManage={manage}
+        assignmentHref={session.user.role === "TEACHER" ? "/teacher/assignments" : session.user.role === "STUDENT" ? "/student/assignments" : undefined}
+        studentId={session.user.role === "STUDENT" ? session.user.id : undefined}
+      />
     </>
   );
 }

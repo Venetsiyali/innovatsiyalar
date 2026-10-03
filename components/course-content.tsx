@@ -1,5 +1,6 @@
 import type { Material, Module } from "@prisma/client";
-import { ArrowDown, ArrowUp, ExternalLink, FileText, Link2, PlayCircle } from "lucide-react";
+import Link from "next/link";
+import { ArrowDown, ArrowUp, ClipboardList, ExternalLink, FileText, Link2, PlayCircle } from "lucide-react";
 import { ActionForm } from "@/components/action-form";
 import { Field } from "@/components/field";
 import { FileUploader } from "@/components/file-uploader";
@@ -14,25 +15,15 @@ import {
   moveModuleAction,
   saveModuleAction,
 } from "@/lib/content-actions";
+import { studentAssignmentsWhere } from "@/lib/assignments";
 import { isModuleOpen } from "@/lib/course-access";
-import { formatDate, TZ } from "@/lib/dates";
+import { formatDate, formatDateTime, toLocalInput } from "@/lib/dates";
 import { db } from "@/lib/db";
 import { formatSize, youtubeId } from "@/lib/files";
 import { t } from "@/lib/i18n";
 import { storageDriver } from "@/lib/storage";
 
 const fileHref = (id: string, download = false) => `/api/files/${id}${download ? "?download=1" : ""}`;
-
-/** "2026-10-05T09:00" in Tashkent time, for datetime-local inputs. */
-function toLocalInput(d: Date | null): string {
-  if (!d) return "";
-  return new Date(d.getTime() + 5 * 3_600_000).toISOString().slice(0, 16);
-}
-
-function formatDateTime(d: Date): string {
-  const time = new Intl.DateTimeFormat("ru-RU", { timeZone: TZ, hour: "2-digit", minute: "2-digit" }).format(d);
-  return `${formatDate(new Date(d.getTime() + 5 * 3_600_000))} ${time}`;
-}
 
 function uploaderLabels() {
   return {
@@ -193,11 +184,27 @@ function SimpleMaterialForm({ moduleId, type }: { moduleId: string; type: "LINK"
 }
 
 /** Course → Module → Element. Managers (admin / course teacher) get editing tools; students read only. */
-export async function CourseContent({ courseId, canManage }: { courseId: string; canManage: boolean }) {
+export async function CourseContent({
+  courseId,
+  canManage,
+  assignmentHref,
+  studentId,
+}: {
+  courseId: string;
+  canManage: boolean;
+  /** Base path for assignment links, e.g. "/teacher/assignments" (none for admin). */
+  assignmentHref?: string;
+  /** When viewing as a student: only their assignments are listed. */
+  studentId?: string;
+}) {
   const live = { deletedAt: null };
-  const [modules, materials] = await Promise.all([
+  const [modules, materials, assignments] = await Promise.all([
     db.module.findMany({ where: { courseId, ...live }, orderBy: [{ position: "asc" }, { createdAt: "asc" }] }),
     db.material.findMany({ where: { module: { courseId }, ...live }, orderBy: [{ position: "asc" }, { createdAt: "asc" }] }),
+    db.assignment.findMany({
+      where: { courseId, moduleId: { not: null }, ...(studentId ? studentAssignmentsWhere(studentId) : live) },
+      orderBy: { deadline: "asc" },
+    }),
   ]);
 
   // Version chains: the latest version is the one nobody points to as "previous".
@@ -241,7 +248,27 @@ export async function CourseContent({ courseId, canManage }: { courseId: string;
               </div>
             </div>
 
-            {items.length === 0 ? (
+            {assignments.some((x) => x.moduleId === mod.id) && (
+              <ul className="space-y-1">
+                {assignments
+                  .filter((x) => x.moduleId === mod.id)
+                  .map((x) => (
+                    <li key={x.id} className="flex items-center gap-2 rounded-lg border border-primary/30 bg-accent/40 p-3 text-sm">
+                      <ClipboardList className="size-4 shrink-0 text-primary" />
+                      {assignmentHref ? (
+                        <Link href={`${assignmentHref}/${x.id}`} className="flex-1 font-medium text-primary hover:underline">
+                          {x.title}
+                        </Link>
+                      ) : (
+                        <span className="flex-1 font-medium">{x.title}</span>
+                      )}
+                      <span className="text-xs text-muted">{t("assignments.due", { date: formatDateTime(x.deadline) })}</span>
+                    </li>
+                  ))}
+              </ul>
+            )}
+
+            {items.length === 0 && !assignments.some((x) => x.moduleId === mod.id) ? (
               <p className="text-sm text-muted">{t("content.noMaterials")}</p>
             ) : (
               <ul className="space-y-2">

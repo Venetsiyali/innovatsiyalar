@@ -4,6 +4,7 @@ import type { MaterialType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { canManageCourse } from "@/lib/course-access";
+import { parseLocalDateTime } from "@/lib/dates";
 import { db } from "@/lib/db";
 import { checkFile, extOf, MIME_BY_EXT, youtubeId } from "@/lib/files";
 import { str, type FormState } from "@/lib/form";
@@ -26,13 +27,6 @@ async function moduleCourse(moduleId: string) {
 function refresh() {
   // Content is shown under several role paths; revalidate them all.
   for (const p of ["/teacher/my-courses", "/student/courses", "/admin/courses"]) revalidatePath(p, "layout");
-}
-
-/** datetime-local value is Tashkent wall time (UTC+5, no DST). */
-function parseLocalDateTime(value: string): Date | null {
-  if (!value) return null;
-  const d = new Date(`${value}:00+05:00`);
-  return Number.isNaN(+d) ? null : d;
 }
 
 // ── Modules ──
