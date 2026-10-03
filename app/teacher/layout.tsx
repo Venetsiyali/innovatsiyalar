@@ -6,6 +6,7 @@ const NAV: NavItem[] = [
   { href: "/teacher/my-courses", labelKey: "nav.myCourses", icon: "courses" },
   { href: "/teacher/schedule", labelKey: "nav.schedule", icon: "schedule" },
   { href: "/teacher/assignments", labelKey: "nav.assignments", icon: "assignments" },
+  { href: "/teacher/attendance", labelKey: "nav.attendance", icon: "attendance" },
   { href: "/teacher/gradebook", labelKey: "nav.gradebook", icon: "gradebook" },
 ];
 

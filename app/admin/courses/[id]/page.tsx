@@ -35,6 +35,9 @@ export default async function CoursePage({ params }: { params: Promise<{ id: str
         <Link href={`/admin/courses/${course.id}/content`}>
           <Button variant="outline">{t("content.openContent")}</Button>
         </Link>
+        <Link href={`/admin/courses/${course.id}/gradebook`}>
+          <Button variant="outline">{t("gradebook.title")}</Button>
+        </Link>
       </PageHeader>
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="space-y-4 p-6">
