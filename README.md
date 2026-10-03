@@ -23,18 +23,16 @@ Kirish: `admin@iusi.uz` / `.env` faylidagi `ADMIN_PASSWORD`.
 ## Vercel'ga joylash
 
 1. GitHub repozitoriysini Vercel'da **Add New → Project** orqali ulang.
-2. **Storage → Create → Neon (Postgres)** tanlab, loyihaga ulang. `DATABASE_URL` va
-   `DATABASE_URL_UNPOOLED` avtomatik qo'shiladi.
-3. **Settings → Environment Variables** bo'limiga qo'shing:
-   - `DIRECT_URL` — `DATABASE_URL_UNPOOLED` qiymati (migratsiyalar uchun)
-   - `AUTH_SECRET` — `npx auth secret` buyrug'i bilan yarating
-   - `ADMIN_EMAIL`, `ADMIN_PASSWORD`
-4. Deploy qiling. `vercel-build` skripti migratsiyalarni o'zi qo'llaydi.
-5. Birinchi marta ma'lumotlarni yuklash uchun (kompyuterda, Vercel'dagi baza manzili bilan):
-
-   ```bash
-   DATABASE_URL="<neon-url>" DIRECT_URL="<neon-unpooled-url>" ADMIN_PASSWORD="..." npm run db:seed
-   ```
+2. **Storage → Create Database → Neon** ni tanlang (mintaqa: Frankfurt) va loyihaga ulang.
+   `DATABASE_URL` va `DATABASE_URL_UNPOOLED` o'zgaruvchilari avtomatik qo'shiladi.
+3. **Storage → Blob** (private) ni ham loyihaga ulang. `BLOB_READ_WRITE_TOKEN` avtomatik qo'shiladi.
+4. **Settings → Environment Variables** bo'limiga quyidagilarni qo'shing:
+   - `AUTH_SECRET` — tasodifiy uzun qator (`npx auth secret` yoki https://generate-secret.vercel.app/32)
+   - `CRON_SECRET` — yana bitta tasodifiy qator
+5. Deploy qiling. `vercel-build` skripti migratsiyalarni o'zi qo'llaydi.
+6. Saytingizda **`/setup`** sahifasini oching (masalan, `https://<loyiha>.vercel.app/setup`). Sozlash kaliti
+   sifatida `AUTH_SECRET` qiymatini kiriting va admin email hamda parolini belgilang. Sahifa admin yaratadi va
+   `data/` papkasidagi dars jadvalini yuklaydi. Admin paydo bo'lgandan keyin `/setup` boshqa ishlamaydi.
 
 Server mintaqasi `vercel.json` faylida `fra1` (Frankfurt) qilib qo'yilgan. Neon bazasini ham
 shu mintaqada (`eu-central-1`) yarating.
