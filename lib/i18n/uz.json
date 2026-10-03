@@ -1,0 +1,62 @@
+{
+  "app": {
+    "name": "IUSI LMS",
+    "fullName": "Xalqaro ijtimoiy innovatsiyalar universiteti",
+    "tagline": "O'quv boshqaruv tizimi"
+  },
+  "auth": {
+    "title": "Tizimga kirish",
+    "subtitle": "Universitet tomonidan berilgan email va parolingizni kiriting",
+    "email": "Email",
+    "password": "Parol",
+    "submit": "Kirish",
+    "submitting": "Kirilmoqda…",
+    "logout": "Chiqish",
+    "invalid": "Email yoki parol noto'g'ri",
+    "locked": "Juda ko'p xato urinish. 15 daqiqadan so'ng qayta urinib ko'ring",
+    "noSignup": "Akkaunt yo'qmi? Universitet administratoriga murojaat qiling."
+  },
+  "roles": {
+    "ADMIN": "Administrator",
+    "TEACHER": "O'qituvchi",
+    "STUDENT": "Talaba"
+  },
+  "nav": {
+    "dashboard": "Bosh sahifa",
+    "users": "Foydalanuvchilar",
+    "groups": "Guruhlar",
+    "courses": "Fanlar",
+    "schedule": "Dars jadvali",
+    "reports": "Hisobotlar",
+    "myCourses": "Mening fanlarim",
+    "assignments": "Vazifalar",
+    "gradebook": "Baho jurnali",
+    "grades": "Baholarim"
+  },
+  "dashboard": {
+    "welcome": "Xush kelibsiz, {name}",
+    "comingSoon": "Bu bo'lim keyingi bosqichlarda qo'shiladi.",
+    "stats": {
+      "groups": "Guruhlar",
+      "courses": "Fanlar",
+      "teachers": "O'qituvchilar",
+      "slots": "Jadvaldagi darslar"
+    }
+  },
+  "days": {
+    "1": "Dushanba",
+    "2": "Seshanba",
+    "3": "Chorshanba",
+    "4": "Payshanba",
+    "5": "Juma",
+    "6": "Shanba"
+  },
+  "shift": {
+    "KUNDUZGI": "Kunduzgi",
+    "KECHKI": "Kechki"
+  },
+  "errors": {
+    "forbidden": "Sizda bu sahifaga kirish huquqi yo'q",
+    "unauthorized": "Avval tizimga kiring"
+  }
+}
