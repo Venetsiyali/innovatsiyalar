@@ -484,7 +484,19 @@
     "assignments": "Vazifalar",
     "graded": "Baholangan",
     "active": "Faol",
-    "activeShare": "Faol o'qituvchilar: {active}/{total} ({pct}%)"
+    "activeShare": "Faol o'qituvchilar: {active}/{total} ({pct}%)",
+    "attLessons": "Davomat qilingan darslar",
+    "nb": "NB",
+    "nbList": "NB ro'yxati",
+    "cached": "Fanlar bo'yicha ko'rsatkichlar 5 daqiqada bir yangilanadi.",
+    "nbTitle": "Davomat (NB) ro'yxati",
+    "allTeachers": "Barcha o'qituvchilar",
+    "allGroups": "Barcha guruhlar",
+    "date": "Sana",
+    "status": "Holat",
+    "total": "Jami: {count}",
+    "byStudent": "Talabalar kesimida",
+    "shown": "Oxirgi {count} ta yozuv ko'rsatilgan"
   },
   "mail": {
     "credentialsSubject": "IUSI LMS — tizimga kirish ma'lumotlari",

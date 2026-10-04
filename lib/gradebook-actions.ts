@@ -35,6 +35,10 @@ export async function saveGradebookAction(courseId: string, _p: FormState, fd: F
     where: { assignmentId: { in: assignments.map((a) => a.id) }, ...live },
     include: { grade: true, student: { select: { fullName: true } } },
   });
+  const enrollments = await db.enrollment.findMany({
+    where: { userId: { in: [...new Set(entries.map((e) => e.studentId))] }, ...live, status: "ACTIVE" },
+    select: { userId: true, groupId: true },
+  });
   const subKey = (a: string, s: string) => `${a}|${s}`;
   const subs = new Map(existing.map((s) => [subKey(s.assignmentId, s.studentId), s]));
 
@@ -46,9 +50,7 @@ export async function saveGradebookAction(courseId: string, _p: FormState, fd: F
     const sub = subs.get(subKey(a.id, e.studentId));
     if (sub?.grade && sub.grade.score === score) continue; // unchanged
     // The student must be enrolled in one of the assignment's groups.
-    const enrolled = await db.enrollment.count({
-      where: { userId: e.studentId, ...live, status: "ACTIVE", groupId: { in: a.groups.map((g) => g.groupId) } },
-    });
+    const enrolled = enrollments.some((en) => en.userId === e.studentId && a.groups.some((g) => g.groupId === en.groupId));
     if (!enrolled) continue;
     if (!Number.isFinite(score) || score < 0 || score > a.maxScore) {
       const name = sub?.student.fullName ?? (await db.user.findUnique({ where: { id: e.studentId } }))?.fullName ?? "";
@@ -106,17 +108,20 @@ export async function saveAttendanceAction(slotId: string, dateIso: string, _p: 
     select: { userId: true, user: { select: { fullName: true } } },
   });
   const newlyAbsent: { id: string; name: string }[] = [];
-  for (const { userId, user } of students) {
+  const previous = new Map(
+    (await db.attendance.findMany({ where: { slotId, date }, select: { studentId: true, status: true } })).map((a) => [a.studentId, a.status]),
+  );
+  const writes = students.map(({ userId, user }) => {
     const raw = String(fd.get(`s:${userId}`) ?? "PRESENT");
     const status = raw === "ABSENT" || raw === "EXCUSED" ? raw : "PRESENT";
-    const prev = await db.attendance.findUnique({ where: { slotId_studentId_date: { slotId, studentId: userId, date } } });
-    await db.attendance.upsert({
+    if (status === "ABSENT" && previous.get(userId) !== "ABSENT") newlyAbsent.push({ id: userId, name: user.fullName });
+    return db.attendance.upsert({
       where: { slotId_studentId_date: { slotId, studentId: userId, date } },
       update: { status, deletedAt: null },
       create: { slotId, studentId: userId, date, status },
     });
-    if (status === "ABSENT" && prev?.status !== "ABSENT") newlyAbsent.push({ id: userId, name: user.fullName });
-  }
+  });
+  await db.$transaction(writes);
 
   // Signal admins exactly once, when a student crosses the threshold.
   if (newlyAbsent.length) {
