@@ -9,6 +9,7 @@ import { assignmentOpenForStudent, assignmentStudents } from "@/lib/assignments"
 import { canManageCourse } from "@/lib/course-access";
 import { formatDateTime, parseLocalDateTime } from "@/lib/dates";
 import { db } from "@/lib/db";
+import { notifyUsers } from "@/lib/notify";
 import { checkFile, extOf } from "@/lib/files";
 import { int, optStr, str, type FormState } from "@/lib/form";
 import { t } from "@/lib/i18n";
@@ -97,14 +98,12 @@ export async function saveAssignmentAction(courseId: string, id: string | null, 
 
   // TZ 4.8: notify students about a new assignment (email arrives in stage 6).
   const students = await assignmentStudents(assignment.id);
-  await db.notification.createMany({
-    data: students.map((s) => ({
+  await notifyUsers(students.map((s) => ({
       userId: s.id,
       type: "assignment_new",
       message: t("assignments.newNotice", { title, date: formatDateTime(deadline) }),
       link: `/student/assignments/${assignment.id}`,
-    })),
-  });
+    })));
   redirect(`/teacher/assignments/${assignment.id}?created=${students.length}`);
 }
 
@@ -184,14 +183,12 @@ export async function gradeAction(submissionId: string, nextHref: string | null,
     },
   });
   const final = effectiveScore(raw, submission.isLate, submission.assignment.latePenaltyPct);
-  await db.notification.create({
-    data: {
+  await notifyUsers([{
       userId: submission.studentId,
       type: "grade",
       message: t("assignments.gradedNotice", { title: submission.assignment.title, score: final, max }),
       link: `/student/assignments/${submission.assignmentId}`,
-    },
-  });
+    }]);
   refresh();
   // Bound args come back from the client: only follow in-app grading links.
   if (nextHref?.startsWith("/teacher/assignments/") && fd.get("goNext") === "1") redirect(nextHref);

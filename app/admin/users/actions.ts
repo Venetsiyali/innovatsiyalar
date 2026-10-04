@@ -9,9 +9,16 @@ import { isUniqueError, optStr, str, type FormState } from "@/lib/form";
 import { t } from "@/lib/i18n";
 import { generateTempPassword, hashPassword } from "@/lib/password";
 import { assertRole } from "@/lib/permissions";
+import { emailCredentials } from "@/lib/notify";
 import { importUsers } from "@/lib/user-import";
 
 const ROLES = ["ADMIN", "TEACHER", "STUDENT"] as const;
+
+const credentialTexts = {
+  subject: t("mail.credentialsSubject"),
+  body: (u: { fullName: string; email: string; password: string }) =>
+    t("mail.credentialsBody", { name: u.fullName, email: u.email, password: u.password }),
+};
 
 const userSchema = z.object({
   fullName: z.string().min(2),
@@ -46,8 +53,8 @@ export async function createUserAction(_prev: FormState, fd: FormData): Promise<
     throw e;
   }
   revalidatePath("/admin/users");
-  // TODO(stage 6): email the temporary password via SMTP instead of showing it.
-  return { success: t("users.tempPassword", { password }) };
+  const mailed = emailCredentials([{ ...parsed.data, password }], credentialTexts);
+  return { success: `${t("users.tempPassword", { password })}${mailed ? ` ${t("mail.sentToo")}` : ""}` };
 }
 
 export async function updateUserAction(id: string, _prev: FormState, fd: FormData): Promise<FormState> {
@@ -70,11 +77,12 @@ export async function updateUserAction(id: string, _prev: FormState, fd: FormDat
 export async function resetPasswordAction(id: string, _prev: FormState, _fd: FormData): Promise<FormState> {
   await assertRole("ADMIN");
   const password = generateTempPassword();
-  await db.user.update({
+  const user = await db.user.update({
     where: { id },
     data: { passwordHash: await hashPassword(password), mustChangePassword: true, failedLoginCount: 0, lockedUntil: null },
   });
-  return { success: t("users.tempPassword", { password }) };
+  const mailed = emailCredentials([{ email: user.email, fullName: user.fullName, password }], credentialTexts);
+  return { success: `${t("users.tempPassword", { password })}${mailed ? ` ${t("mail.sentToo")}` : ""}` };
 }
 
 export async function deleteUserAction(id: string, _prev: FormState, _fd: FormData): Promise<FormState> {
@@ -126,6 +134,7 @@ export async function importUsersAction(_prev: FormState, fd: FormData): Promise
   const result = await importUsers(file.name, await file.arrayBuffer());
   if ("error" in result) return { error: result.error };
   revalidatePath("/admin/users");
+  emailCredentials(result.created, credentialTexts);
   return {
     success: t("import.result", { created: result.created.length, skipped: result.errors.length }),
     data: result,

@@ -1,17 +1,21 @@
-import { GraduationCap, LogOut } from "lucide-react";
+import Link from "next/link";
+import { Bell, GraduationCap, LogOut } from "lucide-react";
 import type { Session } from "next-auth";
 import { signOut } from "@/auth";
-import { NavLink, type IconName } from "@/components/nav-link";
+import { NavLink } from "@/components/nav-link";
 import { Button } from "@/components/ui/button";
+import { db } from "@/lib/db";
 import { t } from "@/lib/i18n";
+import type { NavItem } from "@/lib/nav";
 
-export type NavItem = { href: string; labelKey: string; icon: IconName; exact?: boolean };
+export type { NavItem };
 
-export function AppShell({ session, nav, children }: { session: Session; nav: NavItem[]; children: React.ReactNode }) {
+export async function AppShell({ session, nav, children }: { session: Session; nav: NavItem[]; children: React.ReactNode }) {
   async function logout() {
     "use server";
     await signOut({ redirectTo: "/login" });
   }
+  const unread = await db.notification.count({ where: { userId: session.user.id, isRead: false, deletedAt: null } });
 
   return (
     <div className="min-h-dvh md:flex">
@@ -34,6 +38,18 @@ export function AppShell({ session, nav, children }: { session: Session; nav: Na
       </aside>
       <div className="flex-1">
         <header className="print:hidden flex items-center justify-end gap-3 border-b border-border bg-card px-4 py-3">
+          <Link
+            href="/notifications"
+            className="relative rounded-md p-2 hover:bg-accent"
+            aria-label={unread ? t("notifications.unread", { count: unread }) : t("notifications.bell")}
+          >
+            <Bell className="size-5" />
+            {unread > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 flex min-w-5 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-semibold text-white">
+                {unread > 99 ? "99+" : unread}
+              </span>
+            )}
+          </Link>
           <span className="truncate text-sm text-muted">{session.user.name}</span>
           <form action={logout}>
             <Button variant="outline" size="sm" type="submit">

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { GraduationCap } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LoginForm } from "./login-form";
@@ -32,6 +33,9 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
                 submitting: t("auth.submitting"),
               }}
             />
+            <Link href="/forgot-password" className="block text-center text-sm text-primary hover:underline">
+              {t("auth.forgot")}
+            </Link>
           </CardContent>
         </Card>
         <p className="text-center text-xs text-muted">{t("auth.noSignup")}</p>

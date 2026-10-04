@@ -15,7 +15,8 @@
     "invalid": "Email yoki parol noto'g'ri",
     "locked": "Juda ko'p xato urinish. 15 daqiqadan so'ng qayta urinib ko'ring",
     "noSignup": "Akkaunt yo'qmi? Universitet administratoriga murojaat qiling.",
-    "passwordChanged": "Parol o'zgartirildi"
+    "passwordChanged": "Parol o'zgartirildi",
+    "forgot": "Parolni unutdingizmi?"
   },
   "roles": {
     "ADMIN": "Administrator",
@@ -35,7 +36,8 @@
     "grades": "Baholarim",
     "structure": "Tuzilma",
     "content": "Kontent",
-    "attendance": "Davomat"
+    "attendance": "Davomat",
+    "announcements": "E'lonlar"
   },
   "dashboard": {
     "welcome": "Xush kelibsiz, {name}",
@@ -477,5 +479,48 @@
     "graded": "Baholangan",
     "active": "Faol",
     "activeShare": "Faol o'qituvchilar: {active}/{total} ({pct}%)"
+  },
+  "mail": {
+    "credentialsSubject": "IUSI LMS — tizimga kirish ma'lumotlari",
+    "credentialsBody": "Assalomu alaykum, {name}!\n\nSiz uchun IUSI LMS tizimida akkaunt yaratildi.\nLogin: {email}\nVaqtinchalik parol: {password}\n\nBirinchi kirishda parolni almashtirishingiz kerak bo'ladi.",
+    "resetSubject": "IUSI LMS — parolni tiklash",
+    "resetBody": "Parolni tiklash uchun quyidagi havolani oching. Havola 1 soat amal qiladi.\nAgar siz so'ramagan bo'lsangiz, bu xatni e'tiborsiz qoldiring.",
+    "sentToo": "Parol foydalanuvchining emailiga ham yuborildi."
+  },
+  "forgot": {
+    "title": "Parolni tiklash",
+    "subtitle": "Emailingizni kiriting — parolni tiklash havolasini yuboramiz.",
+    "submit": "Havola yuborish",
+    "sent": "Agar bu email tizimda bo'lsa, unga tiklash havolasi yuborildi. Pochtangizni tekshiring.",
+    "noMail": "Email yuborish hali sozlanmagan. Parolni tiklash uchun administratorga murojaat qiling.",
+    "newTitle": "Yangi parol o'rnatish",
+    "invalid": "Havola eskirgan yoki noto'g'ri. Qaytadan so'rang.",
+    "done": "Parol o'rnatildi. Endi kirishingiz mumkin.",
+    "back": "Kirish sahifasiga qaytish"
+  },
+  "notifications": {
+    "title": "Bildirishnomalar",
+    "empty": "Bildirishnomalar yo'q",
+    "markAll": "Hammasini o'qilgan deb belgilash",
+    "unread": "{count} ta o'qilmagan",
+    "bell": "Bildirishnomalar"
+  },
+  "announcements": {
+    "title": "E'lonlar",
+    "new": "Yangi e'lon",
+    "titleField": "Sarlavha",
+    "body": "Matn",
+    "scope": "Kimga",
+    "ALL": "Butun universitet",
+    "GROUPS": "Tanlangan guruhlar",
+    "groups": "Guruhlar",
+    "myGroups": "Faqat o'z guruhlaringizga yuborishingiz mumkin",
+    "send": "Yuborish",
+    "sent": "E'lon yuborildi: {count} ta foydalanuvchi",
+    "noGroups": "Kamida bitta guruh tanlang",
+    "empty": "E'lonlar yo'q",
+    "by": "{author} · {date}",
+    "toAll": "Hammaga",
+    "toGroups": "Guruhlarga: {groups}"
   }
 }
