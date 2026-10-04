@@ -85,6 +85,9 @@ bo'ladi, ya'ni admin parol bermaguncha ular tizimga kira olmaydi.
   "migalka" dars.
 - **Bitta darsni ko'chirish yoki bekor qilish** — sababi yoziladi. Guruh talabalari va o'qituvchiga tizim ichida
   bildirishnoma yaratiladi (email 6-bosqichda qo'shiladi). Har bir o'zgarish `audit_log`'ga yoziladi.
+- **O'qituvchi taklifi:** o'qituvchi o'z jadvalida darsni bosib, uni ko'chirish yoki bekor qilish taklifini
+  sababi bilan yuboradi. Admin **Dars jadvali → Takliflar** bo'limida tasdiqlaydi yoki rad etadi. Tasdiqlangan
+  taklif oddiy o'zgarish kabi jadvalga tushadi va guruhga xabar ketadi; o'qituvchiga natija haqida bildirishnoma boradi.
 - **Excel'dan import** — universitetning jadval faylini admin paneldan qayta yuklash mumkin.
 - **Eksport** — Excel (.xlsx) fayl. PDF uchun "Chop etish / PDF" tugmasi bor: Vercel'da Puppeteer
   ishlatib bo'lmaydi, shuning uchun brauzerning "PDF sifatida saqlash" imkoniyatidan foydalaniladi.

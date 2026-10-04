@@ -53,6 +53,12 @@ enum ScheduleChangeType {
   CANCELLED
 }
 
+enum ProposalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 enum MaterialType {
   FILE
   LINK
@@ -113,6 +119,8 @@ model User {
   notifications     Notification[]
   auditLogs         AuditLog[]
   passwordResets    PasswordResetToken[]
+  proposals         ScheduleProposal[]   @relation("ProposalTeacher")
+  reviewedProposals ScheduleProposal[]   @relation("ProposalReviewer")
 
   @@index([role])
 }
@@ -310,14 +318,15 @@ model ScheduleSlot {
   updatedAt   DateTime    @updatedAt
   deletedAt   DateTime?
 
-  semester   Semester         @relation(fields: [semesterId], references: [id])
-  course     Course           @relation(fields: [courseId], references: [id])
-  group      Group            @relation(fields: [groupId], references: [id])
-  teacher    User?            @relation(fields: [teacherId], references: [id])
-  room       Room?            @relation(fields: [roomId], references: [id])
-  period     LessonPeriod     @relation(fields: [periodId], references: [id])
+  semester   Semester           @relation(fields: [semesterId], references: [id])
+  course     Course             @relation(fields: [courseId], references: [id])
+  group      Group              @relation(fields: [groupId], references: [id])
+  teacher    User?              @relation(fields: [teacherId], references: [id])
+  room       Room?              @relation(fields: [roomId], references: [id])
+  period     LessonPeriod       @relation(fields: [periodId], references: [id])
   changes    ScheduleChange[]
   attendance Attendance[]
+  proposals  ScheduleProposal[]
 
   @@index([semesterId, groupId])
   @@index([semesterId, teacherId, dayOfWeek, periodId])
@@ -340,6 +349,33 @@ model ScheduleChange {
   slot ScheduleSlot @relation(fields: [slotId], references: [id])
 
   @@index([slotId, date])
+}
+
+// A teacher's request to move/cancel one lesson; becomes a ScheduleChange once an admin approves it.
+model ScheduleProposal {
+  id            String             @id @default(cuid())
+  slotId        String
+  teacherId     String
+  date          DateTime           @db.Date
+  type          ScheduleChangeType
+  reason        String
+  newDate       DateTime?          @db.Date
+  newPeriodId   String?
+  newRoomId     String?
+  status        ProposalStatus     @default(PENDING)
+  reviewedById  String?
+  reviewComment String?
+  reviewedAt    DateTime?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  deletedAt     DateTime?
+
+  slot       ScheduleSlot @relation(fields: [slotId], references: [id])
+  teacher    User         @relation("ProposalTeacher", fields: [teacherId], references: [id])
+  reviewedBy User?        @relation("ProposalReviewer", fields: [reviewedById], references: [id])
+
+  @@index([status])
+  @@index([teacherId])
 }
 
 // ───────────── Content ─────────────
