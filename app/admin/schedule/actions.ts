@@ -1,14 +1,14 @@
 "use server";
 
-import type { LessonType, ScheduleChangeType } from "@prisma/client";
+import type { LessonType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import { dayOfWeek, formatDate, parseDate } from "@/lib/dates";
 import { optStr, str, type FormState } from "@/lib/form";
 import { t } from "@/lib/i18n";
 import { assertRole } from "@/lib/permissions";
-import { findSlotConflicts, notifyScheduleChange, slotInclude, type SlotInput } from "@/lib/schedule";
+import { findSlotConflicts, type SlotInput } from "@/lib/schedule";
+import { applyChange, readChangeForm } from "@/lib/schedule-changes";
 import { parseScheduleWorkbook, saveSchedule } from "@/lib/schedule-import";
 
 async function readSlot(fd: FormData, semesterId: string): Promise<SlotInput & { lessonType: LessonType | null }> {
@@ -88,34 +88,10 @@ export async function deleteSlotAction(id: string, _p: FormState, _fd: FormData)
 /** Cancel or move a single occurrence of a weekly slot; notifies the group. */
 export async function saveChangeAction(slotId: string, _p: FormState, fd: FormData): Promise<FormState> {
   const session = await assertRole("ADMIN");
-  const slot = await db.scheduleSlot.findFirst({ where: { id: slotId, deletedAt: null }, include: { ...slotInclude, semester: true } });
-  if (!slot) return { error: t("common.notFound") };
-
-  const date = parseDate(str(fd, "date"));
-  const type = str(fd, "type") as ScheduleChangeType;
-  const reason = str(fd, "reason");
-  if (!date || !reason || (type !== "CANCELLED" && type !== "MOVED")) return { error: t("common.required") };
-  if (dayOfWeek(date) !== slot.dayOfWeek) return { error: t("schedule.wrongDay", { day: t(`days.${slot.dayOfWeek}`) }) };
-  if (date < slot.semester.startDate || date > slot.semester.endDate) return { error: t("schedule.outsideSemester") };
-  if (await db.scheduleChange.findFirst({ where: { slotId, date, deletedAt: null } })) return { error: t("schedule.changeExists") };
-
-  const moved = type === "MOVED";
-  const newDate = moved ? parseDate(str(fd, "newDate")) : null;
-  const newPeriodId = moved ? optStr(fd, "newPeriodId") : null;
-  const newRoomId = moved ? optStr(fd, "newRoomId") : null;
-  if (moved && !newDate && !newPeriodId && !newRoomId) return { error: t("schedule.moveNeedsTarget") };
-
-  const change = await db.scheduleChange.create({ data: { slotId, date, type, reason, newDate, newPeriodId, newRoomId } });
-  await db.auditLog.create({
-    data: { userId: session.user.id, action: `schedule.${type.toLowerCase()}`, entity: "ScheduleChange", entityId: change.id, newValue: { slotId, date: formatDate(date), reason } },
-  });
-
-  const what = moved
-    ? `${t("schedule.moved").toLowerCase()}${newDate ? ` → ${formatDate(newDate)}` : ""}. ${reason}`
-    : `${t("schedule.cancelled").toLowerCase()}. ${reason}`;
-  const count = await notifyScheduleChange(slot, date, what);
+  const result = await applyChange(slotId, readChangeForm(fd), session.user.id);
+  if ("error" in result) return { error: result.error };
   revalidatePath("/admin/schedule");
-  return { success: t("schedule.changeSaved", { count }) };
+  return { success: t("schedule.changeSaved", { count: result.count }) };
 }
 
 export async function deleteChangeAction(id: string, _p: FormState, _fd: FormData): Promise<FormState> {

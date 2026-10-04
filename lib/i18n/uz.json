@@ -538,5 +538,31 @@
     "file": "Fayl",
     "created": "Sana",
     "size": "Hajmi"
+  },
+  "proposals": {
+    "title": "Jadval o'zgarishi takliflari",
+    "mine": "Mening takliflarim",
+    "propose": "O'zgarish taklif qilish",
+    "send": "Taklif yuborish",
+    "sent": "Taklif adminga yuborildi",
+    "PENDING": "Ko'rib chiqilmoqda",
+    "APPROVED": "Tasdiqlandi",
+    "REJECTED": "Rad etildi",
+    "approve": "Tasdiqlash",
+    "reject": "Rad etish",
+    "comment": "Izoh (ixtiyoriy)",
+    "pending": "Ko'rib chiqilishi kerak",
+    "history": "Oxirgi qarorlar",
+    "none": "Takliflar yo'q",
+    "notYours": "Bu dars sizga biriktirilmagan",
+    "alreadyReviewed": "Bu taklif allaqachon ko'rib chiqilgan",
+    "newNotice": "{teacher}: {course} ({group}), {date} — {type} taklifi",
+    "approvedNotice": "Taklifingiz tasdiqlandi: {course}, {date}",
+    "rejectedNotice": "Taklifingiz rad etildi: {course}, {date}. {comment}",
+    "approvedOk": "Tasdiqlandi. {count} ta foydalanuvchiga xabar yuborildi",
+    "rejectedOk": "Rad etildi",
+    "duplicate": "Bu sana uchun ko'rib chiqilayotgan taklif bor",
+    "hint": "Darsni bosing va o'zgarish taklif qiling. Admin tasdiqlagach, guruhga xabar boradi.",
+    "pendingCount": "Takliflar: {count}"
   }
 }

@@ -40,10 +40,14 @@ export default async function AdminSchedulePage({ searchParams }: { searchParams
     : [];
   const changes = await changesForWeek(slots.map((s) => s.id), monday);
   const title = options.find((o) => o.id === id)?.label;
+  const pendingProposals = await db.scheduleProposal.count({ where: { status: "PENDING", deletedAt: null } });
 
   return (
     <>
       <PageHeader title={title ? `${t("schedule.title")}: ${title}` : t("schedule.title")}>
+        <Link href="/admin/schedule/proposals" className="print:hidden">
+          <Button variant={pendingProposals ? "default" : "outline"}>{t("proposals.pendingCount", { count: pendingProposals })}</Button>
+        </Link>
         <Link href="/admin/schedule/import" className="print:hidden">
           <Button variant="outline">
             <Upload className="size-4" />

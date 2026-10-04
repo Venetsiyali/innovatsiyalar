@@ -1,14 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ActionForm } from "@/components/action-form";
-import { Field, PageHeader } from "@/components/field";
+import { ChangeFields } from "@/components/change-fields";
+import { PageHeader } from "@/components/field";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
 import { db } from "@/lib/db";
-import { addDays, dayOfWeek, formatDate, isoDate, todayDate } from "@/lib/dates";
+import { formatDate } from "@/lib/dates";
 import { t } from "@/lib/i18n";
 import { slotInclude } from "@/lib/schedule";
 import { deleteChangeAction, deleteSlotAction, saveChangeAction, saveSlotAction } from "../../actions";
@@ -20,14 +19,7 @@ export default async function SlotPage({ params }: { params: Promise<{ id: strin
   const slot = await db.scheduleSlot.findFirst({ where: { id, ...live }, include: slotInclude });
   if (!slot) notFound();
 
-  const [changes, periods, rooms] = await Promise.all([
-    db.scheduleChange.findMany({ where: { slotId: id, ...live }, orderBy: { date: "desc" } }),
-    db.lessonPeriod.findMany({ where: { ...live, shift: slot.period.shift }, orderBy: { number: "asc" } }),
-    db.room.findMany({ where: live, orderBy: { name: "asc" } }),
-  ]);
-  // Next occurrence of this weekday, as a sensible default date.
-  const today = todayDate();
-  const next = addDays(today, (slot.dayOfWeek - dayOfWeek(today) + 7) % 7);
+  const changes = await db.scheduleChange.findMany({ where: { slotId: id, ...live }, orderBy: { date: "desc" } });
 
   return (
     <>
@@ -52,42 +44,7 @@ export default async function SlotPage({ params }: { params: Promise<{ id: strin
           <Card className="space-y-3 p-6">
             <CardTitle>{t("schedule.changeOne")}</CardTitle>
             <ActionForm action={saveChangeAction.bind(null, slot.id)} resetOnSuccess>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <Field label={`${t("schedule.changeDate")} (${t(`days.${slot.dayOfWeek}`)})`} htmlFor="date">
-                  <Input id="date" name="date" type="date" required defaultValue={isoDate(next)} />
-                </Field>
-                <Field label={t("schedule.changeType")} htmlFor="type">
-                  <Select id="type" name="type">
-                    <option value="CANCELLED">{t("schedule.cancel")}</option>
-                    <option value="MOVED">{t("schedule.move")}</option>
-                  </Select>
-                </Field>
-              </div>
-              <Field label={t("schedule.reason")} htmlFor="reason">
-                <Input id="reason" name="reason" required />
-              </Field>
-              <fieldset className="grid gap-3 rounded-md border border-dashed border-border p-3 sm:grid-cols-3">
-                <legend className="px-1 text-xs text-muted">{t("schedule.move")}</legend>
-                <Field label={t("schedule.newDate")} htmlFor="newDate">
-                  <Input id="newDate" name="newDate" type="date" />
-                </Field>
-                <Field label={t("schedule.newPeriod")} htmlFor="newPeriodId">
-                  <Select id="newPeriodId" name="newPeriodId" defaultValue="">
-                    <option value="">{t("schedule.sameAsBefore")}</option>
-                    {periods.map((p) => (
-                      <option key={p.id} value={p.id}>{p.number}-para ({p.startTime})</option>
-                    ))}
-                  </Select>
-                </Field>
-                <Field label={t("schedule.newRoom")} htmlFor="newRoomId">
-                  <Select id="newRoomId" name="newRoomId" defaultValue="">
-                    <option value="">{t("schedule.sameAsBefore")}</option>
-                    {rooms.map((r) => (
-                      <option key={r.id} value={r.id}>{r.name}</option>
-                    ))}
-                  </Select>
-                </Field>
-              </fieldset>
+              <ChangeFields dayOfWeek={slot.dayOfWeek} shift={slot.period.shift} />
               <Button type="submit">{t("common.save")}</Button>
             </ActionForm>
           </Card>
