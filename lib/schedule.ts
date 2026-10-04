@@ -1,6 +1,7 @@
 import "server-only";
 import type { LessonType, Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
+import { notifyUsers } from "@/lib/notify";
 import { addDays, dayOfWeek, formatDate, isoDate } from "@/lib/dates";
 import { t } from "@/lib/i18n";
 
@@ -143,10 +144,7 @@ export async function notifyScheduleChange(slot: SlotWithRefs, date: Date, messa
   ];
   if (!rows.length) return 0;
   const text = `${slot.course.name} (${slot.group.name}), ${formatDate(date)}: ${message}`;
-  // TODO(stage 6): also send email.
-  const { count } = await db.notification.createMany({
-    data: rows.map((r) => ({ ...r, type: "schedule_change", message: text })),
-  });
+  const count = await notifyUsers(rows.map((r) => ({ ...r, type: "schedule_change", message: text })));
   return count;
 }
 

@@ -144,6 +144,24 @@ aniqroq vaqtda boradi.
 - **Hisobotlar** (admin): fanlar bo'yicha o'rtacha ball va davomat, xavf guruhidagi talabalar, o'qituvchilarning
   faolligi (TZ'dagi "80% faol o'qituvchi" mezoni shu yerda kuzatiladi).
 
+## Bildirishnomalar, email va e'lonlar (6-bosqich)
+
+- **Qo'ng'iroq belgisi** sahifa tepasida joylashgan va o'qilmagan bildirishnomalar sonini ko'rsatadi. Bildirishnoma
+  bosilganda o'qilgan deb belgilanadi va tegishli sahifa ochiladi.
+- **Email**: yangi vazifa, deadline eslatmasi, baho, jadval o'zgarishi va e'lonlar emailga ham yuboriladi.
+  Yangi akkaunt yaratilganda yoki parol tiklanganda vaqtinchalik parol ham emailga boradi.
+  Xatlar foydalanuvchiga javob qaytgandan keyin yuboriladi, shuning uchun sahifa sekinlashmaydi.
+  Vercel env'ga quyidagilarni kiriting:
+  `SMTP_HOST`, `SMTP_PORT` (587 yoki 465), `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` (masalan, `IUSI LMS <noreply@iusi.uz>`).
+  `SMTP_HOST` bo'sh bo'lsa, email o'chiq qoladi va tizim faqat ichki bildirishnomalar bilan ishlaydi.
+- **Parolni unutdim** (`/forgot-password`): emailga 1 soat amal qiladigan, bir martalik havola yuboriladi.
+  Tizimda bunday email bor-yo'qligi oshkor qilinmaydi.
+- **E'lonlar** (`/announcements`): admin butun universitetga yoki tanlangan guruhlarga yuboradi, o'qituvchi esa
+  faqat o'z fanlari guruhlariga yubora oladi (bu server tomonda tekshiriladi).
+
+> Jadvaldan import qilingan o'qituvchi emaillari (`ism.familiya@iusi.uz`) vaqtinchalik. Ularga xat borishi uchun
+> admin panelda haqiqiy emaillarni kiriting.
+
 ## Loyiha tuzilmasi
 
 ```

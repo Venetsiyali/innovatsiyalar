@@ -6,6 +6,7 @@ import { effectiveScore } from "@/lib/assignment-rules";
 import { canManageCourse } from "@/lib/course-access";
 import { dayOfWeek, isoDate, parseDate, todayDate } from "@/lib/dates";
 import { db } from "@/lib/db";
+import { notifyUsers } from "@/lib/notify";
 import type { FormState } from "@/lib/form";
 import { t } from "@/lib/i18n";
 
@@ -71,14 +72,12 @@ export async function saveGradebookAction(courseId: string, _p: FormState, fd: F
         newValue: { score, via: "gradebook" },
       },
     });
-    await db.notification.create({
-      data: {
+    await notifyUsers([{
         userId: e.studentId,
         type: "grade",
         message: t("assignments.gradedNotice", { title: a.title, score: effectiveScore(score, submission.isLate, a.latePenaltyPct), max: a.maxScore }),
         link: "/student/grades",
-      },
-    });
+      }]);
     count++;
   }
   revalidatePath("/teacher/gradebook", "layout");
@@ -125,14 +124,12 @@ export async function saveAttendanceAction(slotId: string, dateIso: string, _p: 
     for (const s of newlyAbsent) {
       const count = await db.attendance.count({ where: { studentId: s.id, status: "ABSENT", ...live, slot: { semesterId: slot.semesterId } } });
       if (count === ABSENCE_ALERT + 1) {
-        await db.notification.createMany({
-          data: admins.map((a) => ({
+        await notifyUsers(admins.map((a) => ({
             userId: a.id,
             type: "attendance_alert",
             message: t("attendance.alert", { student: s.name, group: slot.group.name, count }),
             link: "/admin/reports",
-          })),
-        });
+          })));
       }
     }
   }

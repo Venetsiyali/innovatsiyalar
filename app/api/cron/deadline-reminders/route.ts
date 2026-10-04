@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { assignmentStudents } from "@/lib/assignments";
 import { formatDateTime } from "@/lib/dates";
 import { db } from "@/lib/db";
+import { notifyUsers } from "@/lib/notify";
 import { t } from "@/lib/i18n";
 
 // Vercel Cron (vercel.json) calls this with `Authorization: Bearer $CRON_SECRET`.
@@ -30,15 +31,12 @@ export async function GET(req: NextRequest) {
     const skip = new Set([...submitted.map((s) => s.studentId), ...reminded.map((r) => r.userId)]);
     const targets = students.filter((s) => !skip.has(s.id));
     if (!targets.length) continue;
-    // TODO(stage 6): also send email.
-    const { count } = await db.notification.createMany({
-      data: targets.map((s) => ({
+    const count = await notifyUsers(targets.map((s) => ({
         userId: s.id,
         type: "deadline_reminder",
         link,
         message: t("assignments.reminderNotice", { title: a.title, date: formatDateTime(a.deadline) }),
-      })),
-    });
+      })));
     sent += count;
   }
   return NextResponse.json({ assignments: assignments.length, sent });

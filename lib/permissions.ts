@@ -6,6 +6,14 @@ import { auth } from "@/auth";
 import { ROLE_HOME } from "@/lib/roles";
 import { t } from "@/lib/i18n";
 
+/** For pages/layouts open to every role: signed in and past the forced password change. */
+export async function requireUser() {
+  const session = await auth();
+  if (!session?.user) redirect("/login");
+  if (session.user.mustChangePassword) redirect("/change-password");
+  return session;
+}
+
 /** For pages/layouts: ensure the user is signed in with the given role (server-side). */
 export async function requireRole(role: Role) {
   const session = await auth();

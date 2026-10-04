@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { startTransition, useActionState, useEffect, useRef } from "react";
 import type { FormState } from "@/lib/form";
 import { cn } from "@/lib/utils";
 
@@ -26,10 +26,15 @@ export function ActionForm({ action, children, className, resetOnSuccess, render
   return (
     <form
       ref={ref}
-      action={formAction}
       className={cn("space-y-3", className)}
       onSubmit={(e) => {
-        if (confirm && !window.confirm(confirm)) e.preventDefault();
+        // Submit manually: with `action={...}` React 19 resets every field after the action,
+        // so a validation error would wipe what the user typed.
+        e.preventDefault();
+        if (confirm && !window.confirm(confirm)) return;
+        const submitter = (e.nativeEvent as SubmitEvent).submitter as HTMLElement | null;
+        const fd = new FormData(e.currentTarget, submitter);
+        startTransition(() => formAction(fd));
       }}
     >
       <fieldset disabled={pending} className="contents">

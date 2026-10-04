@@ -10,6 +10,7 @@ import {
   CalendarDays,
   ClipboardList,
   LayoutDashboard,
+  Megaphone,
   NotebookPen,
   Star,
   Users,
@@ -20,6 +21,7 @@ import { cn } from "@/lib/utils";
 const ICONS = {
   dashboard: LayoutDashboard,
   users: Users,
+  announcements: Megaphone,
   structure: Building2,
   groups: UsersRound,
   courses: BookOpen,
