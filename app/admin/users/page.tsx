@@ -1,6 +1,6 @@
 import type { Prisma, Role } from "@prisma/client";
 import Link from "next/link";
-import { Plus, Upload } from "lucide-react";
+import { FileSpreadsheet, Plus, Upload } from "lucide-react";
 import { PageHeader } from "@/components/field";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -50,6 +50,12 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
   return (
     <>
       <PageHeader title={t("users.title")}>
+        <a href={`/api/admin/users/export?${new URLSearchParams({ q, role })}`}>
+          <Button variant="outline">
+            <FileSpreadsheet className="size-4" />
+            {t("users.export")}
+          </Button>
+        </a>
         <Link href="/admin/users/import">
           <Button variant="outline">
             <Upload className="size-4" />

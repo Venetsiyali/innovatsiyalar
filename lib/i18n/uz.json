@@ -37,7 +37,8 @@
     "structure": "Tuzilma",
     "content": "Kontent",
     "attendance": "Davomat",
-    "announcements": "E'lonlar"
+    "announcements": "E'lonlar",
+    "backups": "Zaxira nusxalar"
   },
   "dashboard": {
     "welcome": "Xush kelibsiz, {name}",
@@ -47,7 +48,10 @@
       "courses": "Fanlar",
       "teachers": "O'qituvchilar",
       "slots": "Jadvaldagi darslar"
-    }
+    },
+    "today": "Bugungi darslar",
+    "noLessonsToday": "Bugun dars yo'q",
+    "toGrade": "Tekshirilmagan ishlar: {count}"
   },
   "days": {
     "1": "Dushanba",
@@ -55,7 +59,8 @@
     "3": "Chorshanba",
     "4": "Payshanba",
     "5": "Juma",
-    "6": "Shanba"
+    "6": "Shanba",
+    "7": "Yakshanba"
   },
   "shift": {
     "KUNDUZGI": "Kunduzgi",
@@ -134,7 +139,8 @@
     "mergeDone": "Birlashtirildi: {count} ta dars o'tkazildi",
     "mergeConfirm": "Birlashtirishni tasdiqlaysizmi? Bu amalni qaytarib bo'lmaydi.",
     "courses": "Biriktirilgan fanlar",
-    "enrollments": "Guruhlari"
+    "enrollments": "Guruhlari",
+    "export": "Excel"
   },
   "import": {
     "title": "Foydalanuvchilarni import qilish",
@@ -522,5 +528,15 @@
     "by": "{author} · {date}",
     "toAll": "Hammaga",
     "toGroups": "Guruhlarga: {groups}"
+  },
+  "backups": {
+    "title": "Zaxira nusxalar",
+    "now": "Hozir nusxa olish",
+    "done": "Nusxa olindi: {rows} ta yozuv, {size}",
+    "help": "Har kuni soat 02:00 da baza avtomatik nusxalanadi (oxirgi 30 kun saqlanadi). Fayllar (materiallar, topshiriqlar) Vercel Blob'da alohida, doimiy saqlanadi. Tiklash: README → \"Zaxira nusxadan tiklash\".",
+    "empty": "Hali nusxa yo'q",
+    "file": "Fayl",
+    "created": "Sana",
+    "size": "Hajmi"
   }
 }

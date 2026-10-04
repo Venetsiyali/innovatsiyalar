@@ -1,9 +1,9 @@
 import "server-only";
 import { createReadStream } from "node:fs";
-import { mkdir, stat, writeFile } from "node:fs/promises";
+import { mkdir, readdir, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { Readable } from "node:stream";
-import { get, head } from "@vercel/blob";
+import { del, get, head, list, put } from "@vercel/blob";
 
 // Production: private Vercel Blob store. Local dev without a token: ./uploads on disk.
 export type StorageDriver = "blob" | "local";
@@ -59,4 +59,39 @@ export async function openStored(fileUrl: string): Promise<{ stream: ReadableStr
   const res = await get(fileUrl, { access: "private" });
   if (!res || res.statusCode !== 200) return null;
   return { stream: res.stream, size: res.blob.size };
+}
+
+export type StoredItem = { key: string; url: string; size: number; uploadedAt: Date };
+
+/** Server-side write (used for backups; user files are uploaded from the browser). */
+export async function putStored(key: string, data: Buffer, contentType: string): Promise<string> {
+  if (storageDriver() === "local") return saveLocal(key, data);
+  const blob = await put(key, data, { access: "private", contentType, addRandomSuffix: false, allowOverwrite: true });
+  return blob.url;
+}
+
+export async function listStored(prefix: string): Promise<StoredItem[]> {
+  if (storageDriver() === "local") {
+    const dir = localPath(prefix.replace(/\/$/, "") + "/x").replace(/[/\\]x$/, "");
+    const names = await readdir(dir).catch(() => [] as string[]);
+    return Promise.all(
+      names.map(async (n) => {
+        const st = await stat(path.join(dir, n));
+        return { key: prefix + n, url: LOCAL_PREFIX + prefix + n, size: st.size, uploadedAt: st.mtime };
+      }),
+    );
+  }
+  const out: StoredItem[] = [];
+  let cursor: string | undefined;
+  do {
+    const page = await list({ prefix, cursor });
+    out.push(...page.blobs.map((b) => ({ key: b.pathname, url: b.url, size: b.size, uploadedAt: b.uploadedAt })));
+    cursor = page.hasMore ? page.cursor : undefined;
+  } while (cursor);
+  return out;
+}
+
+export async function deleteStored(fileUrl: string): Promise<void> {
+  if (fileUrl.startsWith(LOCAL_PREFIX)) await rm(localPath(keyOf(fileUrl)), { force: true });
+  else await del(fileUrl);
 }

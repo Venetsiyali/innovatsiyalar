@@ -1,15 +1,19 @@
 import Link from "next/link";
 import { auth } from "@/auth";
 import { DeadlineList, loadStudentAssignments } from "@/components/deadline-list";
+import { TodayLessons } from "@/components/today-lessons";
+import { db } from "@/lib/db";
 import { t } from "@/lib/i18n";
 
 export default async function StudentDashboard() {
   const session = (await auth())!;
   const now = new Date();
+  const groups = await db.enrollment.findMany({ where: { userId: session.user.id, deletedAt: null, status: "ACTIVE" }, select: { groupId: true } });
   const upcoming = (await loadStudentAssignments(session.user.id)).filter((a) => a.deadline >= now && !a.submissions[0]?.grade).slice(0, 8);
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">{t("dashboard.welcome", { name: session.user.name ?? "" })}</h1>
+      {groups.length > 0 && <TodayLessons filter={{ groupIds: groups.map((g) => g.groupId) }} />}
       <section className="space-y-2">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">{t("assignments.upcoming")}</h2>
