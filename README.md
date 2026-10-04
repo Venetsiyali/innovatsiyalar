@@ -162,6 +162,27 @@ aniqroq vaqtda boradi.
 > Jadvaldan import qilingan o'qituvchi emaillari (`ism.familiya@iusi.uz`) vaqtinchalik. Ularga xat borishi uchun
 > admin panelda haqiqiy emaillarni kiriting.
 
+## Mobil, eksport va zaxira nusxa (7-bosqich)
+
+- **Mobil ko'rinish:** talabalar uchun telefonda pastki menyu chiqadi. Talaba va o'qituvchi bosh sahifasida
+  "Bugungi darslar" bloki bor; o'qituvchida undan davomatni bir bosishda belgilash mumkin. Saytni telefonga ilova
+  sifatida o'rnatish mumkin: brauzer menyusidan "Bosh ekranga qo'shish".
+- **Eksport (Excel):** dars jadvali, baho jurnali va foydalanuvchilar ro'yxati.
+- **Zaxira nusxa:** har kuni soat 02:00 da (Toshkent vaqti) cron butun bazani `backups/iusi-lms-YYYY-MM-DD.json.gz`
+  ko'rinishida private Blob'ga saqlaydi. Oxirgi 30 kunlik nusxa saqlanadi. **Admin → Zaxira nusxalar** sahifasida
+  nusxalar ro'yxati bor, ularni yuklab olish va "Hozir nusxa olish" tugmasi bilan qo'lda nusxa olish mumkin.
+  Materiallar va topshiriqlarning fayllari Vercel Blob'da doimiy saqlanadi. Neon ham o'z zaxirasini yuritadi
+  (point-in-time restore, saqlash muddati tarifga bog'liq).
+
+### Zaxira nusxadan tiklash
+
+1. Neon'da yangi, bo'sh baza yoki branch yarating.
+2. Unga migratsiyalarni qo'llang:
+   `DATABASE_URL=... DATABASE_URL_UNPOOLED=... npx prisma migrate deploy`
+3. Nusxani yuklang:
+   `DATABASE_URL=... npx tsx scripts/restore-backup.ts iusi-lms-2026-10-04.json.gz`
+4. Vercel'dagi `DATABASE_URL` va `DATABASE_URL_UNPOOLED`ni yangi bazaga yo'naltiring va Redeploy qiling.
+
 ## Loyiha tuzilmasi
 
 ```

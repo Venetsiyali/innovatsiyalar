@@ -14,6 +14,7 @@ export const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     { href: "/admin/courses", labelKey: "nav.courses", icon: "courses" },
     { href: "/admin/schedule", labelKey: "nav.schedule", icon: "schedule" },
     { href: "/admin/reports", labelKey: "nav.reports", icon: "reports" },
+    { href: "/admin/backups", labelKey: "nav.backups", icon: "backups" },
     ANNOUNCEMENTS,
   ],
   TEACHER: [

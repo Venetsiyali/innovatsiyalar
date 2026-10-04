@@ -2,11 +2,12 @@ import Link from "next/link";
 import { Bell, GraduationCap, LogOut } from "lucide-react";
 import type { Session } from "next-auth";
 import { signOut } from "@/auth";
-import { NavLink } from "@/components/nav-link";
+import { NavLink, TabLink } from "@/components/nav-link";
 import { Button } from "@/components/ui/button";
 import { db } from "@/lib/db";
 import { t } from "@/lib/i18n";
 import type { NavItem } from "@/lib/nav";
+import { cn } from "@/lib/utils";
 
 export type { NavItem };
 
@@ -15,6 +16,7 @@ export async function AppShell({ session, nav, children }: { session: Session; n
     "use server";
     await signOut({ redirectTo: "/login" });
   }
+  const bottomNav = session.user.role === "STUDENT";
   const unread = await db.notification.count({ where: { userId: session.user.id, isRead: false, deletedAt: null } });
 
   return (
@@ -30,7 +32,7 @@ export async function AppShell({ session, nav, children }: { session: Session; n
           </div>
         </div>
         {/* Horizontal scroll on phones, vertical list on desktop */}
-        <nav className="flex gap-1 overflow-x-auto px-2 pb-3 md:flex-col md:overflow-visible">
+        <nav className={cn("flex gap-1 overflow-x-auto px-2 pb-3 md:flex-col md:overflow-visible", bottomNav && "hidden md:flex")}>
           {nav.map((item) => (
             <NavLink key={item.href} href={item.href} label={t(item.labelKey)} icon={item.icon} exact={item.exact} />
           ))}
@@ -58,8 +60,15 @@ export async function AppShell({ session, nav, children }: { session: Session; n
             </Button>
           </form>
         </header>
-        <main className="mx-auto max-w-6xl p-4 md:p-6">{children}</main>
+        <main className={cn("mx-auto max-w-6xl p-4 md:p-6", bottomNav && "pb-24 md:pb-6")}>{children}</main>
       </div>
+      {bottomNav && (
+        <nav className="fixed inset-x-0 bottom-0 z-20 grid grid-cols-6 border-t border-border bg-card pb-[env(safe-area-inset-bottom)] md:hidden print:hidden">
+          {nav.map((item) => (
+            <TabLink key={item.href} href={item.href} label={t(item.labelKey)} icon={item.icon} exact={item.exact} />
+          ))}
+        </nav>
+      )}
     </div>
   );
 }
